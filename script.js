@@ -89,16 +89,66 @@ function drawScore() {
   ctx.fillText(`Score: ${score}`, canvas.width - 100, 30);
 }
 
+//Move paddle on canvas
+function movePaddle() {
+  paddle.x += paddle.dx;
+
+  //Wall detection
+  if (paddle.x + paddle.w > canvas.width) {
+    paddle.x = canvas.width - paddle.w;
+  }
+
+  if (paddle.x < 0) {
+    paddle.x = 0;
+  }
+}
+
 //Draw everything
 function draw() {
+  //clear cavans
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawPaddle();
 
   drawBall();
   drawScore();
   drawBricks();
 }
+//Update canvas drawing and animation
+function update() {
+  movePaddle();
 
-draw();
+  //Draw everything
+  draw();
+
+  requestAnimationFrame(update);
+}
+
+update();
+
+//KeyDown event
+function keyDown(e) {
+  if (e.key === "Right" || e.key === "ArrowRight") {
+    paddle.dx = paddle.speed;
+  } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    paddle.dx = -paddle.speed;
+  }
+}
+
+//Keyup
+function keyUp(e) {
+  if (
+    e.key === "Right" ||
+    e.key === "ArrowRight" ||
+    e.key === "Left" ||
+    e.key === "ArrowLeft"
+  ) {
+    paddle.dx = 0;
+  }
+}
+
+//Keyboard event handlers
+document.addEventListener("keydown", keyDown);
+document.addEventListener("keyup", keyUp);
 
 //Rules and close event handlers
 rulesBtn.addEventListener("click", () => {
